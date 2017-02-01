@@ -22,89 +22,51 @@
    along with YCLASS.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define YCLASS_DEBUG
+// uncomment for debugging information:
+//#define YCLASS_DEBUG
+
 #include <yclass.h>
 #include <stdio.h>
 
-// -----------------------------------------------------------------------
+/*
+  Let's make an "integer class"...
+  (this example does not make much sense but still might be instructive)
+
+  As said before, the base class is YClass.
+  The yclass macro takes up to four arguments, separated by a comma:
+  1) class name, 2) parent class, 3) variables, 4) methods
+  default (if not specified) is: 2) YClass, 3) none, 4) none
+
+  Variables are all public, there is no such thing as protected or private.
+  Use an underscore "_variablename" to indicate that something
+  should not considered public.
+
+  In this example, we shall directly access the variable i.
+  This is bad style and better done through access methods...
+  See the next example...
+*/
 
 yclass(YInt,YClass,
   int i;
-,
-  yvirtual(void,set,int i);
-  yvirtual(void,print);
+  // int j; more variables here
 )
-
-ymethod(void,YInt,set,int i)
-{
-  ythis->i=i;
-}
-
-ymethod(void,YInt,print)
-{
-  printf("YInt print: i=%d\n",ythis->i);
-}
 
 yconstructor(YInt)
 {
-  ybind(YInt,set);
-  ybind(YInt,print);
 }
 
 ydestructor(YInt)
 {
 }
 
-// -----------------------------------------------------------------------
-
-yclass(YInt2,YInt)
-
-ymethod(void,YInt2,print)
-{
-  ysuper(YInt,YInt,print);
-  printf("YInt2 print: i=%d\n",ythis(YInt)->i);
-}
-
-yconstructor(YInt2)
-{
-  ybind(YInt2,YInt,print);
-
-  ythis(YInt)->i=23;
-}
-
-ydestructor(YInt2)
-{
-}
-
-// -----------------------------------------------------------------------
-
-yclass(YInt3,YInt2)
-
-ymethod(void,YInt3,print)
-{
-  ysuper(YInt2,YInt,print);
-  printf("YInt3 print: i=%d\n",ythis(YInt)->i);
-}
-
-yconstructor(YInt3)
-{
-  ybind(YInt3,YInt,print);
-
-  ythis(YInt)->i=42;
-}
-
-ydestructor(YInt3)
-{
-}
-
-// -------------------------------------------
-
 yclass(YApp,YMain,
-  YInt *a;
-  YInt3 *c;
+  YInt *a; // a YInt variable
 )
 ymain(YApp)
 
+// The following is just a declaration,
+// necessary if we want to define the constructor
+// before the main method.
 ymethod(int,YApp,main,int argc, char *argv[]);
 
 yconstructor(YApp)
@@ -112,26 +74,38 @@ yconstructor(YApp)
   ybind(YApp,YMain,main);
 
   ythis->a=ynew(YInt);
-  ythis->c=ynew(YInt3);
+/*
+  ynew(YInt):
+  Return a new object, i.e. reserve memory, call constructors etc.
+  YCLASS guarantees that everything is initialised as 0,
+  so there is no need e.g. for initialising a->i with 0.
+
+  If ynew fails, an exception is thrown (to be explained later...),
+  default behaviour is controlled program exit.
+
+  ythis:
+  Another pseudokeyword which refers to the current object
+  (here YApp object that was created by means of the "ymain(YApp)" command).
+
+  ythis->a:
+  should be obvious...
+*/
 }
 
 ymethod(int,YApp,main,int argc, char *argv[])
 {
-  printf("This is main\n");
+  // prints numbers 0 and 42...
+  printf("Number %i\n",ythis->a->i);
+  ythis->a->i=42;
+  printf("Number %i\n",ythis->a->i);
 
-  printf("-------------------\n");
-  
-  ycall(ythis->c,YInt,print);
-  ycall(ythis->c,YInt,set,1);
-  ycall(ythis->c,YInt,print);
-
-  printf("-------------------\n");
+  // as said before, it is in general not a good idea to directly access
+  // object variables, see the next example...
 }
 
 ydestructor(YApp)
 {
+  // call destructors and free the memory
   ydelete(ythis->a);
-  ydelete(ythis->c);
 }
-
 

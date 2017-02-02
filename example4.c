@@ -22,11 +22,16 @@
    along with YCLASS.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define YCLASS_DEBUG
+//#define YCLASS_DEBUG
 #include <yclass.h>
 #include <stdio.h>
 
-// -----------------------------------------------------------------------
+/*
+  Example 3 continued. This time, we make a class with one variable
+  and two methods. Notice the keywords "yvirtual" after the third
+  comma within the "yclass" macro.
+  Arguments for yvirtual are: return value, method name, arguments (optional)
+*/
 
 yclass(YInt,YClass,
   int i;
@@ -35,8 +40,11 @@ yclass(YInt,YClass,
   yvirtual(void,print);
 )
 
+// We are going to implement the "set" method here.
+// You have encountered the "ymethod" keyword previously.
 ymethod(void,YInt,set,int i)
 {
+  // and yes, ythis refers to the current YInt object here
   ythis->i=i;
 }
 
@@ -47,6 +55,17 @@ ymethod(void,YInt,print)
 
 yconstructor(YInt)
 {
+  /*
+    Okay, we have declared the methods set and print in the yclass macro,
+    and we have just defined implementations.
+    Don't forget, this is still C.
+    yvirtual defines a function pointer variable, while ymethod defines
+    a function.
+    You'll need "ybind" to make that pointer point to the method.
+    This must be done here, in the constructor.
+    ybind exists with two or three arguments (see below in the YApp constructor).
+    To be explained later...
+  */
   ybind(YInt,set);
   ybind(YInt,print);
 }
@@ -55,83 +74,33 @@ ydestructor(YInt)
 {
 }
 
-// -----------------------------------------------------------------------
-
-yclass(YInt2,YInt)
-
-ymethod(void,YInt2,print)
-{
-  ysuper(YInt,YInt,print);
-  printf("YInt2 print: i=%d\n",ythis(YInt)->i);
-}
-
-yconstructor(YInt2)
-{
-  ybind(YInt2,YInt,print);
-
-  ythis(YInt)->i=23;
-}
-
-ydestructor(YInt2)
-{
-}
-
-// -----------------------------------------------------------------------
-
-yclass(YInt3,YInt2)
-
-ymethod(void,YInt3,print)
-{
-  ysuper(YInt2,YInt,print);
-  printf("YInt3 print: i=%d\n",ythis(YInt)->i);
-}
-
-yconstructor(YInt3)
-{
-  ybind(YInt3,YInt,print);
-
-  ythis(YInt)->i=42;
-}
-
-ydestructor(YInt3)
-{
-}
-
-// -------------------------------------------
-
 yclass(YApp,YMain,
   YInt *a;
-  YInt3 *c;
 )
 ymain(YApp)
 
-ymethod(int,YApp,main,int argc, char *argv[]);
+ymethod(int,YApp,main,int argc, char *argv[])
+{
+  /*
+    "ycall" calls a method...
+    arguments are: object pointer (here: our YInt), class, method, arguments
+    Care must be taken what to write as class when it comes to
+    subclasses. We will come to this point in another example.
+  */
+  ycall(ythis->a,YInt,print);
+  ycall(ythis->a,YInt,set,42);
+  ycall(ythis->a,YInt,print);
+}
 
 yconstructor(YApp)
 {
   ybind(YApp,YMain,main);
 
   ythis->a=ynew(YInt);
-  ythis->c=ynew(YInt3);
-}
-
-ymethod(int,YApp,main,int argc, char *argv[])
-{
-  printf("This is main\n");
-
-  printf("-------------------\n");
-  
-  ycall(ythis->c,YInt,print);
-  ycall(ythis->c,YInt,set,1);
-  ycall(ythis->c,YInt,print);
-
-  printf("-------------------\n");
 }
 
 ydestructor(YApp)
 {
   ydelete(ythis->a);
-  ydelete(ythis->c);
 }
-
 

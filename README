@@ -41,6 +41,7 @@ example1.c
 example2.c
 example3.c
 example4.c
+example5.c
 along with the comments therein.
 
 So far, not all features of YCLASS are documented or covered

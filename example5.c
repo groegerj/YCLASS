@@ -22,11 +22,14 @@
    along with YCLASS.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define YCLASS_DEBUG
+//#define YCLASS_DEBUG
 #include <yclass.h>
 #include <stdio.h>
 
-// -----------------------------------------------------------------------
+/*
+  In this example, we will derive a child class from example4's YInt,
+  which introduces a new method and overwrites an old one.
+*/
 
 yclass(YInt,YClass,
   int i;
@@ -55,20 +58,61 @@ ydestructor(YInt)
 {
 }
 
-// -----------------------------------------------------------------------
+/*
+  YInt2 is a class derived from YInt.
+  We do not introduce new variables here, therefore the two
+  commas in the yclass macro.
+  In this child class, we add a method "get" to obtain the variable i,
+  since we have forgotten this method in YInt...
+  makes not much sense, but shows how to derive classes.
+*/
 
-yclass(YInt2,YInt)
+yclass(YInt2,YInt,,
+  yvirtual(int,get);
+)
 
+ymethod(int,YInt2,get)
+{
+  /* The variable i belongs to YInt.
+     ythis(YInt) casts the ythis pointer (of type YInt2) to a YInt pointer.
+     After all, a class here is just some struct, and a child class is
+     another struct which contains the parent class struct.
+     What else did you expect?
+  */
+  return ythis(YInt)->i;
+}
+
+// This method will be overwritten
 ymethod(void,YInt2,print)
 {
+  /*
+     The "print" method will be overwritten, i.e. the function pointer
+     will point to this new method,
+     through the ybind macro in the constructor below.
+
+     ysuper calls some ancestor incarnation of a method.
+     Second and third arguments: We mean the method "print" which was
+     originally declared in YInt.
+     First argument: We call this method as if being of class YInt.
+     You will see more examples of this later.
+  */
   ysuper(YInt,YInt,print);
   printf("YInt2 print: i=%d\n",ythis(YInt)->i);
 }
 
 yconstructor(YInt2)
 {
+  /*
+    ybind comes in two versions: Two arguments and three arguments.
+    The one with two arguments is an abbreviation of the one with three with the first argument repeated.
+    
+    Three argument form:
+    Argument 1: This class, arguments 3 and 2: method along with original class as declared through yvirtual.
+  */
+  ybind(YInt2,get);
   ybind(YInt2,YInt,print);
 
+  // some new initialisation
   ythis(YInt)->i=23;
 }
 
@@ -76,62 +120,31 @@ ydestructor(YInt2)
 {
 }
 
-// -----------------------------------------------------------------------
-
-yclass(YInt3,YInt2)
-
-ymethod(void,YInt3,print)
-{
-  ysuper(YInt2,YInt,print);
-  printf("YInt3 print: i=%d\n",ythis(YInt)->i);
-}
-
-yconstructor(YInt3)
-{
-  ybind(YInt3,YInt,print);
-
-  ythis(YInt)->i=42;
-}
-
-ydestructor(YInt3)
-{
-}
-
-// -------------------------------------------
 
 yclass(YApp,YMain,
-  YInt *a;
-  YInt3 *c;
+  YInt2 *b;
 )
 ymain(YApp)
 
-ymethod(int,YApp,main,int argc, char *argv[]);
+ymethod(int,YApp,main,int argc, char *argv[])
+{
+  // Notice the use of "YInt2" versus "YInt" in the "ycall" macro calls below.
+  // By now, you should know when to use which in this situation.
+
+  printf("Variable equals %d\n",ycall(ythis->b,YInt2,get));
+  ycall(ythis->b,YInt,set,42);
+  ycall(ythis->b,YInt,print);
+}
 
 yconstructor(YApp)
 {
   ybind(YApp,YMain,main);
 
-  ythis->a=ynew(YInt);
-  ythis->c=ynew(YInt3);
-}
-
-ymethod(int,YApp,main,int argc, char *argv[])
-{
-  printf("This is main\n");
-
-  printf("-------------------\n");
-  
-  ycall(ythis->c,YInt,print);
-  ycall(ythis->c,YInt,set,1);
-  ycall(ythis->c,YInt,print);
-
-  printf("-------------------\n");
+  ythis->b=ynew(YInt2);
 }
 
 ydestructor(YApp)
 {
-  ydelete(ythis->a);
-  ydelete(ythis->c);
+  ydelete(ythis->b);
 }
-
 

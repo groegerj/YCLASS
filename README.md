@@ -29,21 +29,23 @@ USAGE
 To use YCLASS, it suffices to include the header file yclass.h
 in your program.
 
-#include <yclass.h>
+    #include <yclass.h>
 
 Debug information is printed if YCLASS_DEBUG is defined:
 
-#define YCLASS_DEBUG
-#include <yclass.h>
+    #define YCLASS_DEBUG
+    #include <yclass.h>
 
 For usage examples, see the files
-example1.c
-example2.c
-example3.c
-example4.c
-example5.c
-example6.c
-example7.c
+
+    example1.c
+    example2.c
+    example3.c
+    example4.c
+    example5.c
+    example6.c
+    example7.c
+    
 along with the comments therein.
 
 So far, not all features of YCLASS are documented or covered

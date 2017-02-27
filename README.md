@@ -40,43 +40,45 @@ I have read somewhere that the preprocessor is not meant to introduce
 new language elements. But this is exactly what YCLASS does.
 
 Advantages and status:
-*) Easy to use.
-*) No additional software needed besides a C compiler.
-*) Lightweight.
-*) Everything seems to work now (classes, constructors, destructors,
+
+*  Easy to use.
+*  No additional software needed besides a C compiler.
+*  Lightweight.
+*  Everything seems to work now (classes, constructors, destructors,
    inheritance, virtual methods, signals and events, exceptions).
-*) Besides the disadvantages (see below), there are no known bugs.
+*  Besides the disadvantages (see below), there are no known bugs.
 
 Disadvantages and suggestions for improvement:
-*) Usage of the C preprocessor restricts the possibilities
+
+*  Usage of the C preprocessor restricts the possibilities
    and does not prevent the user from using YCLASS in a way
    that is not intended.
-*) Compiler errors become really hard to understand.
+*  Compiler errors become really hard to understand.
    The situation might become slightly better by using
    the #error directive in yclass.h.
-*) So far tested only with GCC. Not everything might be portable,
+*  So far tested only with GCC. Not everything might be portable,
    e.g. I am unsure about "__VA_ARGS__".
-*) So far tested only with examples consisting of a single .c file.
+*  So far tested only with examples consisting of a single .c file.
    While I have tried to forsee and circumvent linking errors,
    I have not tested it so far.
-*) YCLASS messes up the namespace. The macros declare functions
+*  YCLASS messes up the namespace. The macros declare functions
    and variables, do typedefs etc., with names that are invisible
    to the YCLASS user and only used internally.
    It is possible to accidentally run into such a name, which
    gives an error. More care should be taken in the implementation
    of YCLASS, e.g. by using some common prefix.
-*) In the current implementation, the method table is part of each
+*  In the current implementation, the method table is part of each
    object of one class. That means, if you have two objects of the
    same class, the method table for that class exists twice, certainly
    a waste of memory. It is thus not a good idea e.g. to define an
    "integer class" and to have a large array of it. This certainly needs
    improvement. The information concerning the class should
    better be kept separately.
-*) The system of signals and events is very simple, for some purposes
+*  The system of signals and events is very simple, for some purposes
    maybe too simple. The same statement applies even more to the
    current form of exception handling.
-*) Documentation (see below) still needs significant improvement.
-*) There is no real world program written with YCLASS yet.
+*  Documentation (see below) still needs significant improvement.
+*  There is no real world program written with YCLASS yet.
 
 Usage
 =====================================================================
@@ -84,24 +86,25 @@ Usage
 To use YCLASS, it suffices to include the header file yclass.h
 in your program.
 
-#include <yclass.h>
+    #include <yclass.h>
 
 Debug information is printed if YCLASS_DEBUG is defined:
 
-#define YCLASS_DEBUG
-#include <yclass.h>
+    #define YCLASS_DEBUG
+    #include <yclass.h>
 
 For usage examples, see the files
 
-example1.c
-example2.c
-example3.c
-example4.c
-example5.c
-example6.c
-example7.c
-
+    example1.c
+    example2.c
+    example3.c
+    example4.c
+    example5.c
+    example6.c
+    example7.c
+    
 along with the comments therein.
+
 These examples are meant to be read, compiled and run
 in ascending order. They should give you a good idea of the
 basic usage.

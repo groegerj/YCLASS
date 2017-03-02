@@ -7,4 +7,5 @@ cc -I. example4.c -o example4
 cc -I. example5.c -o example5
 cc -I. example6.c -o example6
 cc -I. example7.c -o example7
+cc -I. example8.c -o example8
 

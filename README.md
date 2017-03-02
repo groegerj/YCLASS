@@ -102,12 +102,12 @@ For usage examples, see the files
     example5.c
     example6.c
     example7.c
+    example8.c
     
 along with the comments therein.
 
 These examples are meant to be read, compiled and run
 in ascending order. They should give you a good idea of the
 basic usage.
-Signals and events and exceptions are not yet documented or
-covered by examples.
+Events and exceptions are not yet documented or covered by examples.
 

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-cc -I. example1.c -o example1
-cc -I. example2.c -o example2
-cc -I. example3.c -o example3
-cc -I. example4.c -o example4
-cc -I. example5.c -o example5
-cc -I. example6.c -o example6
-cc -I. example7.c -o example7
-cc -I. example8.c -o example8
-cc -I. example9.c -o example9
+cc -I. example01.c -o example01.o
+cc -I. example02.c -o example02.o
+cc -I. example03.c -o example03.o
+cc -I. example04.c -o example04.o
+cc -I. example05.c -o example05.o
+cc -I. example06.c -o example06.o
+cc -I. example07.c -o example07.o
+cc -I. example08.c -o example08.o
+cc -I. example09.c -o example09.o
 

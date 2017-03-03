@@ -95,15 +95,15 @@ Debug information is printed if YCLASS_DEBUG is defined:
 
 For usage examples, see the files
 
-    example1.c
-    example2.c
-    example3.c
-    example4.c
-    example5.c
-    example6.c
-    example7.c
-    example8.c
-    example9.c
+    example01.c
+    example02.c
+    example03.c
+    example04.c
+    example05.c
+    example06.c
+    example07.c
+    example08.c
+    example09.c
     
 along with the comments therein.
 

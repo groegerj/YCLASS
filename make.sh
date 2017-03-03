@@ -9,4 +9,5 @@ cc -I. example06.c -o example06.o
 cc -I. example07.c -o example07.o
 cc -I. example08.c -o example08.o
 cc -I. example09.c -o example09.o
+cc -I. example10.c -o example10.o
 

@@ -67,8 +67,12 @@ ymethod(void,YWin,print)
 
 // To be invoked by the main program loop:
 // A (physical) mouse click is translated into calling this method.
+// Analogous to yvirtual_signal, the following macro
+// is just ymethod with YClass* ysource as first argument.
 ymethod_signal(void,YWin,doclick,int i)
 {
+  // For derived classes, there is also a ysuper_signal macro.
+
   printf("YWin doclick i=%d\n",i);
 
   // ysource is the calling object, in this case the main class.

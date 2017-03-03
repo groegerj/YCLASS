@@ -103,11 +103,12 @@ For usage examples, see the files
     example6.c
     example7.c
     example8.c
+    example9.c
     
 along with the comments therein.
 
 These examples are meant to be read, compiled and run
 in ascending order. They should give you a good idea of the
 basic usage.
-Events and exceptions are not yet documented or covered by examples.
+Exceptions are not yet documented or covered by examples.
 

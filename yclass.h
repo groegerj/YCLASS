@@ -265,7 +265,6 @@ void CLASS##_delete(CLASS *ythis)\
   CLASS##_destructor(ythis);\
   CLASS##_parent_destructor(ythis);\
   free(ythis);\
-  ythis=NULL;\
 }\
 void CLASS##_destructor(CLASS *ythis)
 
@@ -311,7 +310,6 @@ ymethod_signal(void,YMain,exception,int expnum)\
   else\
   {\
     _yclass_debug_ymain_exception_exit(ysource,expnum);\
-    ydelete(ysource);\
     ydelete(ythis);\
     exit(expnum);\
   }\

@@ -235,7 +235,8 @@ _YCLASS_SELECT_MACRO_4(__VA_ARGS__,yclass4,yclass3,yclass2,yclass1)(__VA_ARGS__)
 
 #define ynew(CLASS) CLASS##_new((YClass*)ythis)
 
-#define ydelete(OBJECT) if (OBJECT) ((YClass*)OBJECT)->ydelete((YClass*)OBJECT)
+#define ydelete(OBJECT) \
+if (OBJECT) do {((YClass*)OBJECT)->ydelete((YClass*)OBJECT);OBJECT=NULL;} while(0)
 
 #define yconstructor(CLASS)\
 extern inline void CLASS##_parent_constructor(CLASS *ythis);\

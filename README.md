@@ -105,11 +105,10 @@ For usage examples, see the files
     example08.c
     example09.c
     example10.c
+    example11.c
     
 along with the comments therein.
 
 These examples are meant to be read, compiled and run
-in ascending order. They should give you a good idea of the
-basic usage.
-Exceptions are not yet documented or covered by examples.
+in ascending order. They should give you a good idea of the usage.
 

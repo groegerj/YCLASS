@@ -265,7 +265,6 @@ void CLASS##_delete(CLASS *ythis)\
   CLASS##_destructor(ythis);\
   CLASS##_parent_destructor(ythis);\
   free(ythis);\
-  ythis=NULL;\
 }\
 void CLASS##_destructor(CLASS *ythis)
 

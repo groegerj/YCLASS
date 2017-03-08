@@ -106,6 +106,7 @@ For usage examples, see the files
     example09.c
     example10.c
     example11.c
+    example12.c
     
 along with the comments therein.
 

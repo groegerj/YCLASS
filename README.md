@@ -112,3 +112,6 @@ along with the comments therein.
 These examples are meant to be read, compiled and run
 in ascending order. They should give you a good idea of the usage.
 
+So far, exceptions are not yet fully covered in the examples,
+while everything else is documented.
+

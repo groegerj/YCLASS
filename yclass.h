@@ -311,7 +311,6 @@ ymethod_signal(void,YMain,exception,int expnum)\
   else\
   {\
     _yclass_debug_ymain_exception_exit(ysource,expnum);\
-    ydelete(ysource);\
     ydelete(ythis);\
     exit(expnum);\
   }\

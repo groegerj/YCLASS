@@ -13,4 +13,5 @@ cc -I. example10.c -o example10.o
 cc -I. example11.c -o example11.o
 cc -I. example12.c -o example12.o
 cc -I. example13.c -o example13.o
+cc -I. example14.c -o example14.o
 

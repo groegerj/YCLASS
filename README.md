@@ -109,12 +109,13 @@ For usage examples, see the files
     example12.c
     example13.c
     example14.c
+    example15.c
     
 along with the comments therein.
 
 These examples are meant to be read, compiled and run
 in ascending order. They should give you a good idea of the usage.
-
-So far, exceptions are not yet fully covered in the examples,
-while everything else is documented.
+While the documentation would certainly enjoy some improvement,
+the examples are now complete in the sense that I think they cover
+every aspect of YCLASS.
 

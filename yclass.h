@@ -115,8 +115,8 @@ ysuper(CLASS,ORIGCLASS,METHOD,(YClass*)ysource,(_yclass_callback_type)yslot,##__
 #define ycall_signal(OBJECT,ORIGCLASS,METHOD,...)\
 ycall(OBJECT,ORIGCLASS,METHOD,(YClass*)ythis,##__VA_ARGS__)
 
-#define ycall_event(OBJECT,ORIGCLASS,METHOD,CALLBACK,...)\
-ycall(OBJECT,ORIGCLASS,METHOD,(YClass*)ythis,(_yclass_callback_type)CALLBACK,##__VA_ARGS__)
+#define ycall_event(OBJECT,ORIGCLASS,METHOD,CBOBJECT,CALLBACK,...)\
+ycall(OBJECT,ORIGCLASS,METHOD,(YClass*)CBOBJECT,(_yclass_callback_type)CALLBACK,##__VA_ARGS__)
 
 #define ycallback(...)\
 yslot?yslot(ysource,(YClass*)ythis,##__VA_ARGS__):0

@@ -104,7 +104,7 @@ ymethod(int,YApp,main,int argc,char *argv[])
 {
   // It is safe to assume that ythis->onclicked is the
   // "correct" method also in child classes.
-  ycall_event(ythis->win,YWin,doclick,ythis->onclicked,42);
+  ycall_event(ythis->win,YWin,doclick,ythis,ythis->onclicked,42);
 
   return 0;
 }

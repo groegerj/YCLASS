@@ -105,9 +105,10 @@ ymethod(void,YApp,print)
 ymethod(int,YApp,main,int argc,char *argv[])
 {
   // Call the doclick event with the onclicked signal as
-  // its yslot callback parameter.
+  // its yslot callback parameter. The fourth argument is
+  // the object to which the signal belongs, usually ythis.
 
-  ycall_event(ythis->win,YWin,doclick,ythis->onclicked,42);
+  ycall_event(ythis->win,YWin,doclick,ythis,ythis->onclicked,42);
 
   // YCLASS's signal/event system is very simple:
   // Instead of adding onclicked to some list of signals

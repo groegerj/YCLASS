@@ -38,6 +38,13 @@
 
 #define _YCLASS_SELECT_MACRO_3(_1,_2,_3,NAME,...) NAME
 #define _YCLASS_SELECT_MACRO_4(_1,_2,_3,_4,NAME,...) NAME
+
+#define _YCLASS_CAT4(X,Y,Z,W) X##Y##Z##W
+#define _YCLASS_CAT3(X,Y,Z) X##Y##Z
+#define _YCLASS_CAT2(X,Y) X##Y
+#define _YCLASS_CAT(...)\
+_YCLASS_SELECT_MACRO_4(__VA_ARGS__,_YCLASS_CAT4,_YCLASS_CAT3,_YCLASS_CAT2)(__VA_ARGS__)
+
 #define ythis(CLASS) ((CLASS*)ythis)
 
 #ifdef YCLASS_DEBUG
@@ -63,13 +70,13 @@ typedef struct YClass_Methods YClass_Methods;
 RETURN (*METHOD)(YClass *ythis,##__VA_ARGS__)
 
 #define ymethod(RETURN,CLASS,METHOD,...)\
-typedef RETURN (*CLASS##_##METHOD##_type)(YClass *ythis,##__VA_ARGS__);\
-RETURN CLASS##_##METHOD(CLASS *ythis,##__VA_ARGS__)
+typedef RETURN (_YCLASS_CAT(*CLASS,_,METHOD,_type))(YClass *ythis,##__VA_ARGS__);\
+RETURN _YCLASS_CAT(CLASS,_,METHOD)(CLASS *ythis,##__VA_ARGS__)
 
 // for use in constructor only
 #define ybind3(CLASS,ORIGCLASS,METHOD)\
-((ORIGCLASS*)ythis)->METHOD=(CLASS##_##METHOD##_type)CLASS##_##METHOD;\
-((ORIGCLASS##_Methods*)(&ythis->origmethods))->METHOD=(CLASS##_##METHOD##_type)CLASS##_##METHOD
+((ORIGCLASS*)ythis)->METHOD=(_YCLASS_CAT(CLASS,_,METHOD,_type))_YCLASS_CAT(CLASS,_,METHOD);\
+((_YCLASS_CAT(ORIGCLASS,_Methods*))(&ythis->origmethods))->METHOD=(_YCLASS_CAT(CLASS,_,METHOD,_type))_YCLASS_CAT(CLASS,_,METHOD)
 
 #define ybind2(CLASS,METHOD)\
 ybind3(CLASS,CLASS,METHOD)
@@ -82,8 +89,8 @@ _YCLASS_SELECT_MACRO_3(__VA_ARGS__,ybind3,ybind2)(__VA_ARGS__)
 ((ORIGCLASS*)OBJECT)->METHOD(((YClass*)OBJECT),##__VA_ARGS__):0
 
 #define ysuper(CLASS,ORIGCLASS,METHOD,...)\
-(((ORIGCLASS##_Methods*)(&((CLASS*)ythis)->origmethods))->METHOD)?\
-((ORIGCLASS##_Methods*)(&((CLASS*)ythis)->origmethods))\
+(((_YCLASS_CAT(ORIGCLASS,_Methods*))(&((CLASS*)ythis)->origmethods))->METHOD)?\
+((_YCLASS_CAT(ORIGCLASS,_Methods*))(&((CLASS*)ythis)->origmethods))\
 ->METHOD(((YClass*)ythis),##__VA_ARGS__):0
 
 // --------------------------------------------------------
@@ -102,9 +109,9 @@ yvirtual(RETURN,METHOD,YClass *ysource,_yclass_callback_type yslot,##__VA_ARGS__
 ymethod(RETURN,CLASS,METHOD,YClass* ysource,##__VA_ARGS__)
 
 #define ymethod_event(RETURN,CLASS,METHOD,...)\
-typedef RETURN (*CLASS##_signal_##METHOD##_type)(YClass *ythis,YClass *ysource,##__VA_ARGS__);\
-typedef RETURN (*CLASS##_##METHOD##_type)(YClass *ythis,YClass *ysource,_yclass_callback_type yslot,##__VA_ARGS__);\
-RETURN CLASS##_##METHOD(CLASS *ythis,YClass *ysource,CLASS##_signal_##METHOD##_type yslot,##__VA_ARGS__)
+typedef RETURN (_YCLASS_CAT(*CLASS,_signal_,METHOD,_type))(YClass *ythis,YClass *ysource,##__VA_ARGS__);\
+typedef RETURN (_YCLASS_CAT(*CLASS,_,METHOD,_type))(YClass *ythis,YClass *ysource,_yclass_callback_type yslot,##__VA_ARGS__);\
+RETURN _YCLASS_CAT(CLASS,_,METHOD)(CLASS *ythis,YClass *ysource,_YCLASS_CAT(CLASS,_signal_,METHOD,_type) yslot,##__VA_ARGS__)
 
 #define ysuper_signal(CLASS,ORIGCLASS,METHOD,...)\
 ysuper(CLASS,ORIGCLASS,METHOD,(YClass*)ysource,##__VA_ARGS__)
@@ -178,10 +185,10 @@ void YClass_parent_destructor(YClass *ythis);
 
 #define yclass4(CLASS,PARENT,NEWVARIABLES,NEWMETHODS)\
 typedef struct CLASS CLASS;\
-typedef struct CLASS##_Methods CLASS##_Methods;\
-struct CLASS##_Methods\
+typedef struct _YCLASS_CAT(CLASS,_Methods) _YCLASS_CAT(CLASS,_Methods);\
+struct _YCLASS_CAT(CLASS,_Methods)\
 {\
-  PARENT##_Methods parent;\
+  _YCLASS_CAT(PARENT,_Methods) parent;\
   NEWMETHODS\
 };\
 struct CLASS\
@@ -189,24 +196,24 @@ struct CLASS\
   PARENT parent;\
   NEWVARIABLES\
   NEWMETHODS\
-  CLASS##_Methods origmethods;\
+  _YCLASS_CAT(CLASS,_Methods) origmethods;\
 };\
-void CLASS##_delete(CLASS *ythis);\
-CLASS* CLASS##_new(YClass *owner);\
-void CLASS##_destructor(CLASS *ythis);\
-void CLASS##_constructor(CLASS *ythis);\
-inline void CLASS##_parent_destructor(CLASS *ythis)\
+void _YCLASS_CAT(CLASS,_delete)(CLASS *ythis);\
+CLASS* _YCLASS_CAT(CLASS,_new)(YClass *owner);\
+void _YCLASS_CAT(CLASS,_destructor)(CLASS *ythis);\
+void _YCLASS_CAT(CLASS,_constructor)(CLASS *ythis);\
+inline void _YCLASS_CAT(CLASS,_parent_destructor)(CLASS *ythis)\
 {\
   _yclass_debug_calling_destructor(PARENT);\
-  PARENT##_destructor((PARENT*)ythis);\
-  PARENT##_parent_destructor((PARENT*)ythis);\
+  _YCLASS_CAT(PARENT,_destructor)((PARENT*)ythis);\
+  _YCLASS_CAT(PARENT,_parent_destructor)((PARENT*)ythis);\
 }\
-inline void CLASS##_parent_constructor(CLASS *ythis)\
+inline void _YCLASS_CAT(CLASS,_parent_constructor)(CLASS *ythis)\
 {\
-  PARENT##_parent_constructor((PARENT*)ythis);\
-  memcpy((PARENT##_Methods*)(&ythis->origmethods),&((PARENT*)ythis)->origmethods,sizeof(PARENT##_Methods));\
+  _YCLASS_CAT(PARENT,_parent_constructor)((PARENT*)ythis);\
+  memcpy((_YCLASS_CAT(PARENT,_Methods*))(&ythis->origmethods),&((PARENT*)ythis)->origmethods,sizeof(_YCLASS_CAT(PARENT,_Methods)));\
   _yclass_debug_calling_constructor(PARENT);\
-  PARENT##_constructor((PARENT*)ythis);\
+  _YCLASS_CAT(PARENT,_constructor)((PARENT*)ythis);\
 }
 
 #define yclass3(CLASS,PARENT,NEWVARIABLES)\
@@ -233,41 +240,41 @@ _YCLASS_SELECT_MACRO_4(__VA_ARGS__,yclass4,yclass3,yclass2,yclass1)(__VA_ARGS__)
   #define _yclass_copy_classname(CLASS)
 #endif
 
-#define ynew(CLASS) CLASS##_new((YClass*)ythis)
+#define ynew(CLASS) _YCLASS_CAT(CLASS,_new)((YClass*)ythis)
 
 #define ydelete(OBJECT) \
 if (OBJECT) do {((YClass*)OBJECT)->ydelete((YClass*)OBJECT);OBJECT=NULL;} while(0)
 
 #define yconstructor(CLASS)\
-extern inline void CLASS##_parent_constructor(CLASS *ythis);\
-CLASS* CLASS##_new(YClass *owner)\
+extern inline void _YCLASS_CAT(CLASS,_parent_constructor)(CLASS *ythis);\
+CLASS* _YCLASS_CAT(CLASS,_new)(YClass *owner)\
 {\
   _yclass_debug_calling_new(CLASS) \
   CLASS *ythis=calloc(1,sizeof(CLASS));\
   if (ythis)\
   {\
-    ((YClass*)ythis)->ydelete=(void (*)(YClass *ythis))CLASS##_delete;\
+    ((YClass*)ythis)->ydelete=(void (*)(YClass *ythis))_YCLASS_CAT(CLASS,_delete);\
     _yclass_copy_classname(CLASS) \
-    CLASS##_parent_constructor(ythis);\
+    _YCLASS_CAT(CLASS,_parent_constructor)(ythis);\
     _yclass_debug_calling_constructor(CLASS);\
-    CLASS##_constructor(ythis);\
+    _YCLASS_CAT(CLASS,_constructor)(ythis);\
   }\
   if(!ythis && owner) ycall(_yclass_main_class,YMain,exception,owner,YEXCEPTION_BAD_ALLOC);\
   return ythis;\
 }\
-void CLASS##_constructor(CLASS *ythis)
+void _YCLASS_CAT(CLASS,_constructor)(CLASS *ythis)
 
 #define ydestructor(CLASS)\
-extern inline void CLASS##_parent_destructor(CLASS *ythis);\
-void CLASS##_delete(CLASS *ythis)\
+extern inline void _YCLASS_CAT(CLASS,_parent_destructor)(CLASS *ythis);\
+void _YCLASS_CAT(CLASS,_delete)(CLASS *ythis)\
 {\
   _yclass_debug_calling_delete(CLASS) \
   _yclass_debug_calling_destructor(CLASS);\
-  CLASS##_destructor(ythis);\
-  CLASS##_parent_destructor(ythis);\
+  _YCLASS_CAT(CLASS,_destructor)(ythis);\
+  _YCLASS_CAT(CLASS,_parent_destructor)(ythis);\
   free(ythis);\
 }\
-void CLASS##_destructor(CLASS *ythis)
+void _YCLASS_CAT(CLASS,_destructor)(CLASS *ythis)
 
 // --------------------------------------------------------
 // main
@@ -324,7 +331,7 @@ ydestructor(YMain){}\
 int main(int argc, char *argv[])\
 {\
   int rval=0;\
-  _yclass_main_class=(YMain*)(CLASS##_new(NULL));\
+  _yclass_main_class=(YMain*)(_YCLASS_CAT(CLASS,_new)(NULL));\
   if (!_yclass_main_class)\
   {\
     printf("YCLASS: Creation of main class %s failed.\n",#CLASS);\

@@ -85,13 +85,13 @@ ybind3(CLASS,CLASS,METHOD)
 _YCLASS_SELECT_MACRO_3(__VA_ARGS__,ybind3,ybind2)(__VA_ARGS__)
 
 #define ycall(OBJECT,ORIGCLASS,METHOD,...)\
-(((ORIGCLASS*)OBJECT)->METHOD)?\
-((ORIGCLASS*)OBJECT)->METHOD(((YClass*)OBJECT),##__VA_ARGS__):0
+((((ORIGCLASS*)OBJECT)->METHOD)?\
+((ORIGCLASS*)OBJECT)->METHOD(((YClass*)OBJECT),##__VA_ARGS__):0)
 
 #define ysuper(CLASS,ORIGCLASS,METHOD,...)\
-(((_YCLASS_CAT(ORIGCLASS,_Methods*))(&((CLASS*)ythis)->origmethods))->METHOD)?\
+((((_YCLASS_CAT(ORIGCLASS,_Methods*))(&((CLASS*)ythis)->origmethods))->METHOD)?\
 ((_YCLASS_CAT(ORIGCLASS,_Methods*))(&((CLASS*)ythis)->origmethods))\
-->METHOD(((YClass*)ythis),##__VA_ARGS__):0
+->METHOD(((YClass*)ythis),##__VA_ARGS__):0)
 
 // --------------------------------------------------------
 // event and signal macros
@@ -126,7 +126,7 @@ ycall(OBJECT,ORIGCLASS,METHOD,(YClass*)ythis,##__VA_ARGS__)
 ycall(OBJECT,ORIGCLASS,METHOD,(YClass*)CBOBJECT,(_yclass_callback_type)CALLBACK,##__VA_ARGS__)
 
 #define ycallback(...)\
-yslot?yslot(ysource,(YClass*)ythis,##__VA_ARGS__):0
+(yslot?yslot(ysource,(YClass*)ythis,##__VA_ARGS__):0)
 
 // --------------------------------------------------------
 // exception handling
